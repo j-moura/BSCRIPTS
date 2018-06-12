@@ -1,0 +1,15 @@
+#variaveis
+Set-StrictMode -Version '2.0'
+$temppath = Test-Path "C:\temp\log22.csv" 
+ForEach ($_ in $temppath)
+{if ($temppath -eq $true){Rename-Item 'C:\temp\log22.csv' ('C:\temp\{0:ddMMyyyyhhmm}.log' -f (get-date))}}
+$data = (get-date).addmonths(-6) 
+$paths = get-content 'C:\Admin\Script-Deletar-Logs-180\PATH1.txt' 
+foreach ($path in $paths) {
+get-childitem $path -recurse | where {$_.lastwritetime -le $data -and  $_.attributes -ne 'Directory'} | select lastwritetime, fullname, attributes | convertto-csv | add-content "C:\temp\log22.csv" -PassThru }
+#importar o arquivo criado
+$files = import-csv C:\temp\log22.csv
+#$files.fullname | ForEach-Object {remove-item $_} 
+#foreach-object {if (($_).attributes -ne "Directory" -and ($_).lastwritetime){add-content 'C:\temp\log.txt' ($_).fullname, ($_).lastwritetime}} `
+#    }
+
